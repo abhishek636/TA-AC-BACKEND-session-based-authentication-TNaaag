@@ -15,12 +15,12 @@ router.get("/register", function (req, res, next) {
 router.post("/register", (req, res, next) => {
   User.create(req.body, (err, user) => {
     if (err) {
-      if (err.code === 11000) {
+      if (err.code  === 11000) {
         req.flash("error", "Add a unique email!");
         return res.redirect("/users/register");
       }
-      if (err.name === "ValidatorError") {
-        req.flash("error", "err.message");
+      if (err.name === "ValidationError") {
+        req.flash("error", err.message);
         return res.redirect("/users/register");
       }
       return res.json({ err });
@@ -44,7 +44,7 @@ router.post("/login", (req, res, next) => {
   User.findOne({ email }, (err, user) => {
     if (err) return next(err);
     if (!user) {
-      req.flash("error", "Email is not registered");
+      req.flash("error", "This Email is not registered");
       return res.redirect("/users/login");
     }
     user.verifyPassword(password, (err, result) => {
